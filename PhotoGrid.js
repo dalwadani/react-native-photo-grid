@@ -6,8 +6,9 @@ import {
   Dimensions,
   TouchableOpacity,
   ImageBackground,
+  Image,
 } from "react-native";
-import _ from "lodash";
+
 import ImageLoad from "react-native-image-placeholder";
 
 const { width } = Dimensions.get("window");
@@ -43,12 +44,12 @@ class PhotoGrid extends PureComponent {
 
   render() {
     const { imageProps } = this.props;
-    const source = _.take(this.props.source, 5);
+    const source = this.props.source.slice(0, 5);
     const firstViewImages = [];
     const secondViewImages = [];
     const firstItemCount = source.length === 5 ? 2 : 1;
-    let index = 0;
-    _.each(source, (img, callback) => {
+
+    source.forEach((img, index) => {
       if (index === 0) {
         firstViewImages.push(img);
       } else if (index === 1 && firstItemCount === 2) {
@@ -56,7 +57,6 @@ class PhotoGrid extends PureComponent {
       } else {
         secondViewImages.push(img);
       }
-      index++;
     });
 
     const { width, height } = this.props;
@@ -103,18 +103,40 @@ class PhotoGrid extends PureComponent {
             <TouchableOpacity
               activeOpacity={0.7}
               key={index}
-              style={{ flex: 1 }}
+              style={{
+                flex: 1,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
               onPress={event => this.handlePressImage(event, { image })}
             >
               <ImageLoad
                 style={[
                   styles.image,
-                  { width: firstImageWidth, height: firstImageHeight },
+                  {
+                    position: "absolute",
+                    top: 0,
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    width: firstImageWidth,
+                    height: firstImageHeight,
+                  },
                   this.props.imageStyle,
                 ]}
                 source={typeof image === "string" ? { uri: image } : image}
                 {...imageProps}
               />
+              {image.slice(-3) == "gif" ? (
+                <Image
+                  style={{
+                    width: 60,
+                    height: 60,
+                  }}
+                  source={require("../assets/images/play_icon.png")}
+                  {...imageProps}
+                />
+              ) : null}
             </TouchableOpacity>
           ))}
         </View>
@@ -135,7 +157,7 @@ class PhotoGrid extends PureComponent {
                   this.handlePressImage(
                     event,
                     { image, index },
-                    secondViewImages
+                    secondViewImages,
                   )
                 }
               >
@@ -156,15 +178,43 @@ class PhotoGrid extends PureComponent {
                     </View>
                   </ImageBackground>
                 ) : (
-                  <ImageLoad
-                    style={[
-                      styles.image,
-                      { width: secondImageWidth, height: secondImageHeight },
-                      this.props.imageStyle,
-                    ]}
-                    source={typeof image === "string" ? { uri: image } : image}
-                    {...imageProps}
-                  />
+                  <View
+                    style={{
+                      flex: 1,
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <ImageLoad
+                      style={[
+                        styles.image,
+                        {
+                          position: "absolute",
+                          top: 0,
+                          bottom: 0,
+                          left: 0,
+                          right: 0,
+                          width: secondImageWidth,
+                          height: secondImageHeight,
+                        },
+                        this.props.imageStyle,
+                      ]}
+                      source={
+                        typeof image === "string" ? { uri: image } : image
+                      }
+                      {...imageProps}
+                    />
+                    {image.slice(-3) == "gif" ? (
+                      <Image
+                        style={{
+                          width: 30,
+                          height: 30,
+                        }}
+                        source={require("../assets/images/play_icon.png")}
+                        {...imageProps}
+                      />
+                    ) : null}
+                  </View>
                 )}
               </TouchableOpacity>
             ))}
@@ -214,4 +264,3 @@ const styles = {
 };
 
 export default PhotoGrid;
-
