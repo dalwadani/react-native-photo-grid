@@ -85,7 +85,7 @@ class PhotoGrid extends PureComponent {
                     width: 60,
                     height: 60,
                   }}
-                  source={require("../assets/images/play_icon.png")}
+                  source={require("./assets/play_icon.png")}
                   {...imageProps}
                 />
               ) : null}
@@ -155,7 +155,7 @@ class PhotoGrid extends PureComponent {
                           width: 30,
                           height: 30,
                         }}
-                        source={require("../assets/images/play_icon.png")}
+                        source={require("./assets/play_icon.png")}
                         {...imageProps}
                       />
                     ) : null}
