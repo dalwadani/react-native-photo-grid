@@ -1,9 +1,7 @@
 import React, { PureComponent } from "react";
-import PropTypes from "prop-types";
 import {
   View,
   Text,
-  Dimensions,
   TouchableOpacity,
   ImageBackground,
   Image,
@@ -11,23 +9,7 @@ import {
 
 import ImageLoad from "react-native-image-placeholder";
 
-const { width } = Dimensions.get("window");
-
 class PhotoGrid extends PureComponent {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      width: props.width,
-      height: props.height,
-    };
-  }
-
-  static defaultProps = {
-    numberImagesToShow: 0,
-    onPressImage: () => {},
-  };
-
   isLastImage = (index, secondViewImages) => {
     const { source, numberImagesToShow } = this.props;
 
@@ -59,43 +41,15 @@ class PhotoGrid extends PureComponent {
       }
     });
 
-    const { width, height } = this.props;
-    let ratio = 0;
-    if (secondViewImages.length === 0) {
-      ratio = 0;
-    } else if (secondViewImages.length === 1) {
-      ratio = 1 / 2;
-    } else {
-      ratio = this.props.ratio;
-    }
+    const { height } = this.props;
+
     const direction = source.length === 5 ? "row" : "column";
 
-    const firstImageWidth =
-      direction === "column"
-        ? width / firstViewImages.length
-        : width * (1 - ratio);
-    const firstImageHeight =
-      direction === "column"
-        ? height * (1 - ratio)
-        : height / firstViewImages.length;
-
-    const secondImageWidth =
-      direction === "column" ? width / secondViewImages.length : width * ratio;
-    const secondImageHeight =
-      direction === "column"
-        ? height / secondViewImages.length
-        : height * ratio;
-
-    const secondViewWidth = direction === "column" ? width : width * ratio;
-    const secondViewHeight = direction === "column" ? height * ratio : height;
-
     return source.length ? (
-      <View
-        style={[{ flexDirection: direction, width, height }, this.props.styles]}
-      >
+      <View style={[{ flexDirection: direction, height }, this.props.styles]}>
         <View
           style={{
-            flex: 1,
+            flex: 2,
             flexDirection: direction === "row" ? "column" : "row",
           }}
         >
@@ -119,8 +73,6 @@ class PhotoGrid extends PureComponent {
                     bottom: 0,
                     left: 0,
                     right: 0,
-                    width: firstImageWidth,
-                    height: firstImageHeight,
                   },
                   this.props.imageStyle,
                 ]}
@@ -133,7 +85,7 @@ class PhotoGrid extends PureComponent {
                     width: 60,
                     height: 60,
                   }}
-                  source={require("./assets/play_icon.png")}
+                  source={require("../assets/images/play_icon.png")}
                   {...imageProps}
                 />
               ) : null}
@@ -143,8 +95,7 @@ class PhotoGrid extends PureComponent {
         {secondViewImages.length ? (
           <View
             style={{
-              width: secondViewWidth,
-              height: secondViewHeight,
+              flex: 1,
               flexDirection: direction === "row" ? "column" : "row",
             }}
           >
@@ -163,11 +114,7 @@ class PhotoGrid extends PureComponent {
               >
                 {this.isLastImage(index, secondViewImages) ? (
                   <ImageBackground
-                    style={[
-                      styles.image,
-                      { width: secondImageWidth, height: secondImageHeight },
-                      this.props.imageStyle,
-                    ]}
+                    style={[styles.image, this.props.imageStyle]}
                     source={typeof image === "string" ? { uri: image } : image}
                   >
                     <View style={styles.lastWrapper}>
@@ -194,8 +141,6 @@ class PhotoGrid extends PureComponent {
                           bottom: 0,
                           left: 0,
                           right: 0,
-                          width: secondImageWidth,
-                          height: secondImageHeight,
                         },
                         this.props.imageStyle,
                       ]}
@@ -210,7 +155,7 @@ class PhotoGrid extends PureComponent {
                           width: 30,
                           height: 30,
                         }}
-                        source={require("./assets/play_icon.png")}
+                        source={require("../assets/images/play_icon.png")}
                         {...imageProps}
                       />
                     ) : null}
@@ -225,24 +170,11 @@ class PhotoGrid extends PureComponent {
   }
 }
 
-PhotoGrid.prototypes = {
-  source: PropTypes.array.isRequired,
-  width: PropTypes.number,
-  height: PropTypes.number,
-  style: PropTypes.object,
-  imageStyle: PropTypes.object,
-  onPressImage: PropTypes.func,
-  ratio: PropTypes.float,
-  imageProps: PropTypes.object,
-};
-
 PhotoGrid.defaultProps = {
   style: {},
   imageStyle: {},
   imageProps: {},
-  width: width,
   height: 400,
-  ratio: 1 / 3,
 };
 
 const styles = {
